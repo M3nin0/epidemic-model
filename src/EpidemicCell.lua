@@ -28,45 +28,46 @@ end
 local function generatesInfectionFactorByConnections(healthyFactor, cell)
     local result = 0
 
-    forEachNeighbor(cell, function(neighbor, weight)
+    forEachNeighbor(cell, function(neighbor)
         -- calculating micra term
         local networkConnectionVirulescence =
-                    weight  * neighbor.movementFactor * cell.virulescencePortion
+            cell.connectionFactor  * neighbor.movementFactor * cell.virulescencePortion
 
-        local tmp = (#neighbor:getAgents() / #cell:getAgents()) * networkConnectionVirulescence
-        result = result + (tmp * neighbor.past.cellPopulation.infected)
+        local tmp = (neighbor.population / cell.population) * networkConnectionVirulescence
+        result = result + (tmp * neighbor.past.infected)
     end)
+
     return healthyFactor * result
 end
 
 
-function EpidemicCell(recoverPortion, movementFactor, virulescencePortion)
+function EpidemicCell(recoverPortion, movementFactor,
+                        virulescencePortion, connectionFactor)
     return Cell{
+        healthy = 1,
+        infected = 0,
+        recovered = 0,
+        population = 100,
         recoverPortion = recoverPortion,
         movementFactor = movementFactor, -- or 'random', 'artificial-area'
+        connectionFactor = connectionFactor,
         virulescencePortion = virulescencePortion,
-
         init = function(cell)
-            cell.cellPopulation = {healthy = 1, infected = 0, recovered = 0}
-
-            if cell.movementFactor == 'random' then
-                cell.movementFactor = Random{min = 0, max = 1}:sample()
-            elseif cell.movementFactor == 'artificial-area' then
-                cell.movementFactor = artificialArea(cell)
-            end
+            -- ToDo: Movement factor
+            -- ToDo: population type
         end,
         execute = function(cell)
             local infectionFactorByConnections = generatesInfectionFactorByConnections(
-                                                cell.past.cellPopulation.healthy, cell)
+                                                            cell.past.healthy, cell)
 
-            cell.cellPopulation.infected = ((1 - cell.recoverPortion) * cell.past.cellPopulation.infected) + (cell.virulescencePortion * cell.past.cellPopulation.healthy * cell.past.cellPopulation.infected) + infectionFactorByConnections
+             cell.infected = ((1 - cell.recoverPortion) * cell.past.infected)
+             cell.infected = cell.infected + (cell.virulescencePortion * cell.past.healthy * cell.past.infected)
+             cell.infected = cell.infected + infectionFactorByConnections
 
-            cell.cellPopulation.healthy = cell.past.cellPopulation.healthy - (cell.virulescencePortion * cell.past.cellPopulation.healthy * cell.past.cellPopulation.infected) - infectionFactorByConnections
+             cell.healthy = cell.past.healthy - (cell.virulescencePortion * cell.past.healthy * cell.past.infected)
+             cell.healthy = cell.healthy - infectionFactorByConnections
 
-            cell.cellPopulation.recovered = cell.past.cellPopulation.recovered + (cell.recoverPortion * cell.past.cellPopulation.infected)
-        end,
-        healthyInCell = function(cell) return cell.cellPopulation.healthy end,
-        infectedInCell = function(cell) return cell.cellPopulation.infected end,
-        recoveredInCell = function(cell) return cell.cellPopulation.recovered end,
+             cell.recovered = cell.past.recovered + (cell.recoverPortion * cell.past.infected)
+        end
     }
 end

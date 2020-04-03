@@ -1,85 +1,62 @@
+require("Utils")
 require("EpidemicCell")
-require("NeighborhoodUtils")
-require("PopulationSociety")
 require("ConnectionFactorUtils")
 
--- Random{seed = 777}
 
 EpidemicModel = Model{
-    finalTime = 100,
+    time = 1,
+    finalTime = 60,
 
+    -- Model params
     recoverPortion = 0.4,
-    movementFactor = 0.5, -- or 'random', 'artificial-area'
+    movementFactor = 0.5,
+    connectionFactor = oneWay(),
     virulescencePortion = 0.6,
     epidemicCenter = {x = 25, y = 25},
+    init = function(self)
+        self.cell = EpidemicCell(self.recoverPortion, self.movementFactor,
+                            self.virulescencePortion, self.connectionFactor)
 
-    init = function(model)
-        model.cell = EpidemicCell(model.recoverPortion, model.movementFactor,
-                                    model.virulescencePortion)
-
-        model.cellularSpace = CellularSpace{
+        self.cs = CellularSpace{
             xdim = 50,
-            instance = model.cell,
-            infectedInSpace = function(cellularSpace)
-				local result = 0
-
-				forEachCell(cellularSpace, function(cell)
-					result = result + cell:infectedInCell()
-				end)
-
-				return result
-            end,
-            healthyInSpace = function(cellularSpace)
-				local result = 0
-
-				forEachCell(cellularSpace, function(cell)
-					result = result + cell:healthyInCell()
-				end)
-				return result
-            end,
-            recoveredInSpace = function(cellularSpace)
-				local result = 0
-
-				forEachCell(cellularSpace, function(cell)
-					result = result + cell:recoveredInCell()
-				end)
-				return result
-            end
+            instance = self.cell
         }
-        model.cellularSpace:createNeighborhood{
-            strategy = "mxn",
-            filter = VonNeumannNeighborhood,
-            weight = threeWay
+        self.cs:createNeighborhood{
+            strategy = "vonneumann" -- or "moore"
         }
 
-        model.cellularSpace:get(
-                model.epidemicCenter.x,
-                model.epidemicCenter.y).cellPopulation = {healthy = 0.7, infected = 0.3, recovered = 0}
+        -- Defining a epidemic center
+        local epidemicCenter = self.cs:get(self.epidemicCenter.x ,
+                                                    self.epidemicCenter.y)
+        epidemicCenter.healthy = 0.7
+        epidemicCenter.infected = 0.3
 
-        model.env = Environment{PopulationSociety, model.cellularSpace}
-        model.env:createPlacement{max=100}
-
-        model.map = Map{
-            target = model.cellularSpace,
-            select = "infectedInCell",
+        -- model visual objects
+        self.map = Map{
+            target = self.cs,
+            select = "infected",
             min = 0,
             max = 1,
-            slices = 10,
+            slices = 5,
             color = {"white", "black"}
-       }
-
-       model.chart = Chart {
-            target = model.cellularSpace,
-            select = {"healthyInSpace", "infectedInSpace", "recoveredInSpace"},
+        }
+        self.chart = Chart {
+            target = self.cs,
+            select = {"healthy", "infected", "recovered"},
             color = {"blue", "red", "green"}
         }
 
-        model.timer = Timer{
-            Event{action = model.map},
-            Event{action = model.chart},
-            Event{action = model.cellularSpace}
+        self.timer = Timer{
+            Event{action = self},
+            Event{action = self.cs},
+            Event{action = self.map},
+            Event{action = self.chart}
         }
+    end,
+    execute = function (model) -- to save model figures
+        model.map:save("images/epidemicmodel_t" .. model.time .. ".png")
+        model.time = model.time + 1
     end
 }
 
-EpidemicModel{finalTime=100}:run()
+EpidemicModel:run()
