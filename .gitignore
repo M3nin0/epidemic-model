@@ -6,6 +6,9 @@
 # Compiled Lua sources
 luac.out
 
+# Terrame
+*.tme
+
 # luarocks build files
 *.src.rock
 *.zip
