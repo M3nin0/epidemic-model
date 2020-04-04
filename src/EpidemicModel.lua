@@ -5,24 +5,27 @@ require("ConnectionFactorUtils")
 
 EpidemicModel = Model{
     time = 1,
-    finalTime = 60,
+    finalTime = 65,
 
     -- Model params
+    vaccination = 0,
+    cellPopulation = 100, -- or 'inhomogeneous'
     recoverPortion = 0.4,
     movementFactor = 0.5,
-    connectionFactor = oneWay(),
+    connectionFactor = threeWay(), -- See ConnectionFactorUtils.lua
     virulescencePortion = 0.6,
     epidemicCenter = {x = 25, y = 25},
     init = function(self)
         self.cell = EpidemicCell(self.recoverPortion, self.movementFactor,
-                            self.virulescencePortion, self.connectionFactor)
+                            self.virulescencePortion, self.connectionFactor,
+                            self.vaccination, self.cellPopulation)
 
         self.cs = CellularSpace{
             xdim = 50,
             instance = self.cell
         }
         self.cs:createNeighborhood{
-            strategy = "vonneumann" -- or "moore"
+            strategy = "moore" -- or "vonneumann"
         }
 
         -- Defining a epidemic center

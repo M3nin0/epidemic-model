@@ -24,6 +24,10 @@ function noWay()
     return 0
 end
 
+function artificialWay()
+    return 'artificial-area'
+end
+
 --- Generates a random connection factor way (Considering 0, 1, 2 or 3 ways)
 function randomWay()
     return Random{
