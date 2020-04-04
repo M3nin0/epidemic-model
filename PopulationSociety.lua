@@ -7,5 +7,5 @@ local PeopleAgent = Agent{}
 
 PopulationSociety = Society{
     instance = PeopleAgent,
-    quantity = 50 * 50 * 100 -- xdim * xdim * elements in cell
+    quantity = 10 * 10 * 5 -- xdim * xdim * elements in cell
 }
