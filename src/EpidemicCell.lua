@@ -43,7 +43,6 @@ local function generatesInfectionFactorByConnections(healthyFactor, cell)
 
     forEachNeighbor(cell, function(neighbor)
         definePopulationInhomogeneous(neighbor)
-        print(neighbor.population)
 
         -- calculating micra term
         local networkConnectionVirulescence =
