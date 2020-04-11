@@ -40,6 +40,9 @@
 \usepackage{multirow}
 \renewcommand{\familydefault}{\sfdefault}
 
+% Centralizando legenda das figuras (10/04/2020)
+\usepackage[position=top]{subfig}
+
 \usepackage[brazilian,hyperpageref]{backref}	 % Paginas com as citações na bibl
 \usepackage[alf,abnt-thesis-year=both,]{abntex2cite}	% Citações padrão ABNT
 
@@ -228,7 +231,7 @@
 
 \section{População}
 
-\par Como descrito por \citeonline{White2007}, para a representação da população dentro do AC é assumido que, o terreno onde a epidemia está ocorrendo representa o espaço celular bidimensional, com células de geometria quadrada e áreas idênticas para todos os quadrados. Dentro de cada uma das células é tido que existe uma população, sendo a distribuição desta não uniforme, o que permite que possam existir diferentes quantidades de população nas diferentes células do espaço celular. Como o modelo apresentado neste trabalho é baseado em modelos Suscetíveis-Infectados-Recuperados (SIR), cada indivíduo dentro das populações das células podem ser dos tipos \texttt{suscetíveis}, \texttt{infectados} ou \texttt{recuperados}. Para este modelo, a população de cada célula é considerada como estado.
+\par Como descrito por \citeonline{White2007}, para a representação da população dentro do AC é assumido que, o terreno onde a epidemia está ocorrendo representa o espaço celular bidimensional $MxN$, com células de geometria quadrada e áreas idênticas. Dentro de cada uma das células $(i, j)$ é tido que existe uma população de indivíduos $N_{ij}$, com distribuição não-homogênea, permitindo a existência de diferentes quantidades de indivíduos na população das diferentes células do espaço celular. Como o modelo apresentado neste trabalho é baseado em modelos Suscetíveis-Infectados-Recuperados (SIR), cada indivíduo dentro das populações das células podem ser dos tipos \texttt{suscetíveis}, \texttt{infectados} ou \texttt{recuperados}. Para este modelo, a população de cada célula é considerada como estado.
 
 \par De forma geral, o que ocorre é, para cada tempo $t$ da simulação, em cada uma das células $(i, j)$ do espaço celular, poderão existir diferentes porcentagens de tipos de indivíduos diferentes, como apresentado na Figura \ref{figure:cellArticle}, sendo necessário considerar que a partição dos suscetíveis $S_{ij}^t \in [0, 1]$, a partição dos infectados $I_{ij}^t \in [0, 1]$ e a partição dos recuperados $R_{ij}^t \in [0, 1]$, juntas, devem respeitar a regra $S_{ij}^t + I_{ij}^t + R_{ij}^t = 1$ em cada célula.
 
@@ -242,7 +245,7 @@
 
 \section{Função de transição}
 
-\par As funções de transição, como já explicadas anteriormente, são as responsáveis em realizar a atualização dos estados com base no estado atual de cada célula e também o estado de seus vizinhos. O modelo estudado neste trabalho, em essência, considera três equações, cada uma delas apresenta o comportamento dos diferentes tipos de indivíduos da população, apresentados na seção anterior.
+\par As funções de transição, como já explicadas anteriormente, são as responsáveis em realizar a atualização dos estados das células com base no estado atual de cada célula e também o estado de seus vizinhos. O modelo estudado neste trabalho, trabalha com as vizinhanças de \texttt{Moore} e \texttt{Von Neumann} e considera três equações, uma para cada tipo de indivíduo da população vistos na seção anterior. As equações são apresentadas abaixo.
 
 \begin{equation} \label{eq:infected}
 I_{ij}^t=\left(1\:-\:\varepsilon \right)\cdot I_{ij}^{t\:-\:1}+v\:\cdot S_{ij}^{t\:-\:1}\cdot I_{ij}^{t\:-\:1}+S_{ij}^{t\:-\:1}\cdot \:\displaystyle \:\sum _{\left(\alpha ,\beta \right)\in V^{\ast }}^{ }\left(\frac{N_{i+\alpha ,\:j\:+\:\beta }}{N_{ij}}\cdot \mu _{\alpha \beta }^{\left(i,\:j\right)}\cdot I_{i+\alpha \:,\:j+\beta \:}^{t\:-\:1}\:\right)
@@ -256,12 +259,23 @@ S_{ij}^t=S_{ij}^{t\:-\:1}-v\cdot S_{ij}^{t\:-\:1}\cdot I_{ij}^{t\:-\:1}-S_{ij}^{
 R_{ij}^t=R_{ij}^{t\:-\:1}+\varepsilon \cdot I_{ij}^{t\:-\:1}
 \end{equation}
 
-\par Como já citado, para todas as células $(i, j)$, em todos os tempos $t$, a afirmação $S_{ij}^t + I_{ij}^t + R_{ij}^t = 1$ deve ser verdadeira.
+\par Onde $V^\star$ representa todos os vizinhos de uma célula e o parâmetro $\mu_{\alpha \beta}^{\left(i,\:j\right)}$ representa o produto de três fatores $\mu_{\alpha \beta}^{\left(i,\:j\right)} = c_{\alpha \beta}^{\left(i,\:j\right)} \dot m_{\alpha \beta}^{\left(i,\:j\right)} \dot v$, onde $c_{\alpha \beta}^{\left(i,\:j\right)}$ e $ m_{\alpha \beta}^{\left(i,\:j\right)}$ representam, respectivamente, o fator de conexão entre as células e o fator de movimento entre a célula corrente e os vizinhos nas células $(i + \alpha, j + \beta)$. O fator $v \in [0, 1]$ representa virulência da epidemia e $\varepsilon \in [0, 1]$, indica o fator de recuperação dos indivíduos infectados.
 
-\subsection{Equações que consideram vacina}
+\par A relação apresentada pelas equações é de equilíbrio, onde, por exemplo, caso haja um aumento na quantidade de indivíduos infectados haverá a diminuição dos suscetíveis. Tal comportamento pode ser visto diretamente nas equações, por exemplo, para as equações \ref{eq:infected} e \ref{eq:susceptible} é possível perceber que existe uma relação onde, os indivíduos suscetíveis diminuirão caso o número de infectados aumente. A equação \ref{eq:infected} pode ser interpretada através facilmente com sua divisão em três partes, cada parte considerando uma das somas da equação. Na primeira soma, é tido que os infectados no instante de tempo $t$ serão representados pela porção de indivíduos do instante de tempo $t - 1$ que não foram curados. A segunda soma apresenta a porção dos indivíduos saudáveis que foram infectados pelo contato com infectados, isto considera o fator de virulência. A terceira soma apresenta os que foram infectados por contato com vizinhos infectados. Já na equação \ref{eq:susceptible} apresenta a porção dos suscetíveis através das parcelas dos que ainda não foram infectados. Por fim, a equação \ref{eq:recovered} apresenta seu resultado como sendo o somatório da parcela dos infectados que são recuperados em cada instante de tempo $t$
+
+\par Para os fatores de conexão e movimento é possível interpretar esses como sendo, respectivamente, a quantidade de serviços que o indivíduo tem disponível para sair de sua célula e ir para outra e o fator de movimento representa a vontade do indivíduo de utilizar tais serviços. Durante a descrição do fator de escala, \citeonline{White2007} faz uma relação com meios de transporte como carro, avião e ônibus entre cada célula e um fator que represente cada um desses meios de transporte na equação. Tal relação é apresentada abaixo.
+
+$m_{\alpha \beta}^{\left(i,\:j\right)}$ = \begin{cases}
+1, & \mbox{se existem três tipos de transporte de uma célula para outra} \\
+0.6, & \mbox{se existem duas tipos de transporte de uma célula para outra} \\
+0.3, & \mbox{se existe um tipo de transporte de uma célula para outra} \\
+0, & \mbox{se não existe transporte de uma célula para outra} \\
+\end{cases}
+
+\subsection{Comportamentos com vacina}
 
 % Completar descrição
-\par O CA analisado e implementado neste trabalho, considera também no comportamento dos indivíduos a adição de vacina contra o vírus que está sendo espalhado. As equações para este caso tem comportamento análogo ao já apresentado anteriormente, com a diferença de que, nessas que consideram a vacina há o fator $\omega$, que representa a quantidade de indivíduos vacinados em cada célula. Tais mudanças são apresentados nas equações \ref{eq:vacineS} e \ref{eq:vacineR}, não havendo mudanças para o comportamento dos infectados.
+\par O CA analisado e implementado neste trabalho, considera também no comportamento dos indivíduos a adição de vacina contra o vírus da epidemia. As equações para este caso tem comportamento análogo ao já apresentado anteriormente, com a diferença de que, nessas que consideram a vacina há o fator $\omega$, que representa a quantidade de indivíduos vacinados em cada célula. Tais mudanças são apresentados nas equações \ref{eq:vacineS} e \ref{eq:vacineR}, não havendo mudanças para o comportamento dos infectados.
 
 \begin{equation} \label{eq:vacineS}
 S_{ij}^t=S_{ij}^{t\:-\:1}-\omega \cdot S_{ij}^{t\:-\:1}-v\cdot \:S_{ij}^{t\:-\:1}\cdot \:I_{ij}^{t\:-\:1}-S_{ij}^{t\:-\:1}\cdot \:\displaystyle \:\sum _{\left(\alpha ,\beta \right)\in V^{\ast }}^{ }\left(\frac{N_{i+\alpha ,\:j\:+\:\beta }}{N_{ij}}\cdot \mu _{\alpha \beta }^{\left(i,\:j\right)}\cdot I_{i+\alpha \:,\:j+\beta \:}^{t\:-\:1}\:\right)
