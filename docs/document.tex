@@ -275,7 +275,7 @@ $m_{\alpha \beta}^{\left(i,\:j\right)}$ = \begin{cases}
 \subsection{Comportamentos com vacina}
 
 % Completar descrição
-\par O CA analisado e implementado neste trabalho, considera também no comportamento dos indivíduos a adição de vacina contra o vírus da epidemia. As equações para este caso tem comportamento análogo ao já apresentado anteriormente, com a diferença de que, nessas que consideram a vacina há o fator $\omega$, que representa a quantidade de indivíduos vacinados em cada célula. Tais mudanças são apresentados nas equações \ref{eq:vacineS} e \ref{eq:vacineR}, não havendo mudanças para o comportamento dos infectados.
+\par O AC analisado e implementado neste trabalho, considera também no comportamento dos indivíduos a adição de vacina contra o vírus da epidemia. As equações para este caso tem comportamento análogo ao já apresentado anteriormente, com a diferença de que, nessas que consideram a vacina há o fator $\omega$, que representa a quantidade de indivíduos vacinados em cada célula. Tais mudanças são apresentados nas equações \ref{eq:vacineS} e \ref{eq:vacineR}, não havendo mudanças para o comportamento dos infectados.
 
 \begin{equation} \label{eq:vacineS}
 S_{ij}^t=S_{ij}^{t\:-\:1}-\omega \cdot S_{ij}^{t\:-\:1}-v\cdot \:S_{ij}^{t\:-\:1}\cdot \:I_{ij}^{t\:-\:1}-S_{ij}^{t\:-\:1}\cdot \:\displaystyle \:\sum _{\left(\alpha ,\beta \right)\in V^{\ast }}^{ }\left(\frac{N_{i+\alpha ,\:j\:+\:\beta }}{N_{ij}}\cdot \mu _{\alpha \beta }^{\left(i,\:j\right)}\cdot I_{i+\alpha \:,\:j+\beta \:}^{t\:-\:1}\:\right)
