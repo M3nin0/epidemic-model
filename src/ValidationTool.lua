@@ -47,7 +47,6 @@ end
 -- @arg mN Movement Factor from O to N
 -- @arg v Virulence
 function willThereBeInfecteds(dInfected, nO, nN, cN, mN, v)
-    -- local infectedIsValidEq = nN / (100 * nO * cN * mN * v)
     return dInfected >= equation13Paper(nO, nN, cN, mN, v)
 end
 

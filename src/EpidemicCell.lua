@@ -1,33 +1,36 @@
 require("Utils")
 
 --- Generates a conection factor by cell location
---- (Described in article)
+--- (Described in the article)
 --  @arg cell population cell
 local function artificialArea(cell)
-
     -- Artificial Area 1
-    if cell.x >= 0 and cell.x <= 25 and cell.y >= 0 and cell.y <= 25 then
+    if cell.x >= 0 and cell.x <= 24 and cell.y >= 0 and cell.y <= 24 then
         return 0.6
     end
 
     -- Artificial Area 2
-    if cell.x >= 0 and cell.x <= 25 and cell.y >= 26 and cell.y <= 50 then
+    if cell.x >= 0 and cell.x <= 24 and cell.y >= 25 and cell.y <= 49 then
         return 1
     end
 
     -- Artificial Area 3
-    if cell.x >= 26 and cell.x <= 50 and cell.y >= 0 and cell.y <= 25 then
+    if cell.x >= 25 and cell.x <= 49 and cell.y >= 0 and cell.y <= 24 then
         return 0
     end
 
     -- Artificial Area 4
-    if cell.x >= 26 and cell.x <= 50 and cell.y >= 26 and cell.y <= 50 then
+    if cell.x >= 25 and cell.x <= 49 and cell.y >= 25 and cell.y <= 49 then
         return 0.3
     end
 end
 
+--- Defines the population of a cell based on its Y position
+--- (Described in the article)
+--  @arg cell cell from cellular space
 local function definePopulationInhomogeneous(cell)
     if cell.population == 'inhomogeneous' then
+        -- e^j in article
         cell.population = math.exp(cell.y)
     end
 end

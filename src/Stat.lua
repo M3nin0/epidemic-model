@@ -13,6 +13,11 @@ function independentBernoulliRandomVariable(p)
   end
 end
 
+--- Binomial distribution, can be used to test different population initializations 
+--- and number of infected individuals
+--  @arg n value being tried
+--  @arg p probability of the value occurring
+--  @arg size number of attempts
 function binomialDistribution(n, p, size)
   local binomialValues = {};
   
