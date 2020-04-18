@@ -6,4 +6,4 @@ Trabalho desenvolvidos pelos discentes:
 - Arturo Sánchez Pena;
 - Felipe Menino Carlos
 
-A implementação feita utilizando Python e a plataforma [TerraME](http://www.terrame.org/doku.php)
+A implementação foi feita utilizando Python e a plataforma [TerraME](http://www.terrame.org/doku.php)
