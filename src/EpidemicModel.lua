@@ -8,7 +8,7 @@ EpidemicModel = Model{
     finalTime = 65,
 
     -- Model params
-    vaccination = 0,
+    vaccination = 0, -- or 'artificial-vac',
     cellPopulation = 100, -- or 'inhomogeneous'
     recoverPortion = 0.4,
     movementFactor = 0.5,

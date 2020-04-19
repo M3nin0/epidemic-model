@@ -1,39 +1,6 @@
 require("Utils")
+require("ArtificialContext")
 
---- Generates a conection factor by cell location
---- (Described in the article)
---  @arg cell population cell
-local function artificialArea(cell)
-    -- Artificial Area 1
-    if cell.x >= 0 and cell.x <= 24 and cell.y >= 0 and cell.y <= 24 then
-        return 0.6
-    end
-
-    -- Artificial Area 2
-    if cell.x >= 0 and cell.x <= 24 and cell.y >= 25 and cell.y <= 49 then
-        return 1
-    end
-
-    -- Artificial Area 3
-    if cell.x >= 25 and cell.x <= 49 and cell.y >= 0 and cell.y <= 24 then
-        return 0
-    end
-
-    -- Artificial Area 4
-    if cell.x >= 25 and cell.x <= 49 and cell.y >= 25 and cell.y <= 49 then
-        return 0.3
-    end
-end
-
---- Defines the population of a cell based on its Y position
---- (Described in the article)
---  @arg cell cell from cellular space
-local function definePopulationInhomogeneous(cell)
-    if cell.population == 'inhomogeneous' then
-        -- e^j in article
-        cell.population = math.exp(cell.y)
-    end
-end
 
 local function generatesInfectionFactorByConnections(healthyFactor, cell)
     local result = 0
@@ -73,6 +40,10 @@ function EpidemicCell(recoverPortion, movementFactor,
         connectionFactor = connectionFactor, -- or 'artificial-area'
         virulescencePortion = virulescencePortion,
         init = function(cell)
+            -- define vaccination factor by cell quadrant
+            if (cell.vaccination == 'artificial-vac') then
+                cell.vaccination = artificialVaccinationArea(cell)
+            end
         end,
         execute = function(cell)
             local infectionFactorByConnections = generatesInfectionFactorByConnections(
