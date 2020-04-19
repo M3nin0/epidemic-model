@@ -7,3 +7,7 @@ Trabalho desenvolvidos pelos discentes:
 - Felipe Menino Carlos
 
 A implementação foi feita utilizando Python e a plataforma [TerraME](http://www.terrame.org/doku.php)
+
+### Resultados
+
+Os resultados gerados são discutidos no [relatório](#) desenvolvido. Todas as representações gráficas dos resultados do modelo que foram utilizados no relatório estão disponíveis no diretório [media](media).
