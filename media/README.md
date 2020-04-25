@@ -1,4 +1,4 @@
-## Media
+## Media 
 
 Este diretório contém os [gifs](gifs) e [vídeos](videos) feitos com os modelos implementados. Os vídeos também estão disponíveis no Youtube, através dos links abaixo:
 
