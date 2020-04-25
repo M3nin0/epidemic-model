@@ -10,4 +10,4 @@ A implementação foi feita utilizando Python e a plataforma [TerraME](http://ww
 
 ### Resultados
 
-Os resultados gerados são discutidos no [relatório](report_arturos_felipem.pdf) desenvolvido. Todas as representações gráficas dos resultados do modelo que foram utilizados no relatório estão disponíveis no diretório [media](media).
+Os resultados gerados são discutidos no [relatório](report_arturos_felipem_cap241.pdf) desenvolvido. Todas as representações gráficas dos resultados do modelo que foram utilizados no relatório estão disponíveis no diretório [media](media).
